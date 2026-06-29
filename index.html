@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Crypto Bros Studio</title>
+    <style>
+      html, body, #root { height: 100%; margin: 0; }
+      body { font-family: -apple-system, system-ui, sans-serif; }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <!-- Several app modules do top-level require('../assets/x.png') for native asset
+         resolution. On web that throws "require is not defined" and breaks the module.
+         A harmless global require (returns undefined → local-asset lookups fall back to
+         remote URLs) lets those modules load. Must run before the module script. -->
+    <script>
+      window.require = function () { return undefined; };
+    </script>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
