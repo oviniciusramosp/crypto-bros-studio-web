@@ -4,7 +4,11 @@ import { View, Text } from 'react-native-web';
 import { ThemeProvider, useTheme } from '@/theme/ThemeContext';
 import { NotionRenderer } from '@/components/notion/NotionRenderer';
 import { leanToRenderBlocks } from '@/services/content/bridge';
+import { SCREEN_HORIZONTAL_PADDING } from '@/theme/layout';
 import type { ContentBlock } from '@/types/content';
+
+// iPhone 17 logical width.
+const PHONE_WIDTH = 393;
 
 class EB extends React.Component<{ children: React.ReactNode }, { e: any }> {
   state = { e: null as any };
@@ -49,9 +53,18 @@ const blocks = leanToRenderBlocks(fixture);
 function Frame() {
   const { colors } = useTheme();
   return (
-    <View style={{ flex: 1, alignItems: 'center', backgroundColor: colors.background, minHeight: '100%' as any }}>
-      <View style={{ width: '100%' as any, maxWidth: 760, padding: 16 }}>
-        <Text style={{ fontSize: 12, color: colors.textSecondary, marginBottom: 12 }}>Preview — real app renderer (React Native Web)</Text>
+    <View style={{ alignItems: 'center', paddingVertical: 32 }}>
+      {/* Phone-width column with the app's real background + horizontal padding */}
+      <View
+        style={{
+          width: PHONE_WIDTH,
+          backgroundColor: colors.background,
+          borderRadius: 28,
+          overflow: 'hidden',
+          paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
+          paddingVertical: 24,
+        }}
+      >
         <EB>
           <NotionRenderer blocks={blocks} />
         </EB>
