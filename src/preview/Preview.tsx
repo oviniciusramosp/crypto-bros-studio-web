@@ -1,12 +1,17 @@
 import React from 'react';
 import { View, Text } from 'react-native-web';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider, useTheme } from '@/theme/ThemeContext';
+import { DevModeProvider } from '@/contexts/DevModeContext';
+import { VideoPlaybackProvider } from '@/contexts/VideoPlaybackContext';
+import { ChartFullscreenProvider } from '@/contexts/ChartFullscreenContext';
 import { NotionRenderer } from '@/components/notion/NotionRenderer';
 import { leanToRenderBlocks } from '@/services/content/bridge';
 import { SCREEN_HORIZONTAL_PADDING } from '@/theme/layout';
 import type { ContentBlock } from '@/types/content';
 
 const PHONE_WIDTH = 393; // iPhone 17 logical width
+const queryClient = new QueryClient();
 
 class EB extends React.Component<{ children: React.ReactNode }, { e: any }> {
   state = { e: null as any };
@@ -43,8 +48,16 @@ function Frame({ blocks }: { blocks: ContentBlock[] }) {
 /** 1:1 preview using the app's REAL renderer + theme. */
 export function Preview({ blocks }: { blocks: ContentBlock[] }) {
   return (
-    <ThemeProvider>
-      <Frame blocks={blocks} />
-    </ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider>
+        <DevModeProvider>
+          <VideoPlaybackProvider>
+            <ChartFullscreenProvider>
+              <Frame blocks={blocks} />
+            </ChartFullscreenProvider>
+          </VideoPlaybackProvider>
+        </DevModeProvider>
+      </ThemeProvider>
+    </QueryClientProvider>
   );
 }
